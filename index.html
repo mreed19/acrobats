@@ -7,28 +7,49 @@
     <script>
       angular.module('acrobatApp', [])
       .controller('AcrobatController', function($scope) {
-        $scope.acrobats = ['mike ', 'jordan', 'edward', 'mitch'];
+        $scope.editing = false;
+        $scope.acrobats = [];
+        $scope.acrobat = {};
         $scope.addAcrobat = function() {
-          $scope.acrobats.push($scope.acrobatName);
-          $scope.acrobatName = '';
+          $scope.acrobats.push($scope.acrobat);
+          $scope.acrobat = {};
+          $scope.acrobat.name = '';
+          $scope.acrobat.act = '';
         }
-        $scope.removeLastAcrobat = function() {
-          $scope.acrobats.pop();
+        $scope.editAcrobat = function(acrobat) {
+          $scope.editing = true;
+          $scope.acrobat = acrobat;
+        }
+        $scope.updateAcrobat = function() {
+          $scope.acrobat = {};
+          $scope.editing = false;
+        }
+        $scope.removeAcrobat = function(index) {
+          $scope.acrobats.splice(index, 1);
         }
       });
     </script>
   </head>
   <body ng-controller="AcrobatController">
     <h1>League of Acrobats</h1>
-    <form ng-submit="addAcrobat()">
-      <input type="text" ng-model="acrobatName">
+    <form ng-hide="editing" ng-submit="addAcrobat()">
+      <input type="text" ng-model="acrobat.name" placeholder="Enter your name" required>
+      <input type="text"  ng-model="acrobat.act" placeholder="What's your act?" required>
       <button type="submit">Sign Me Up</button>
-      <a href="#" ng-click="removeLastAcrobat()">Remove last acrobat</a>
+    </form>
+    <form ng-show="editing" ng-submit="updateAcrobat()">
+      <input type="text" ng-model="acrobat.name" placeholder="Enter your name" required>
+      <input type="text"  ng-model="acrobat.act" placeholder="What's your act?" required>
+      <button type="submit">Update</button>
     </form>
     <div>
       <h2>Member List</h2>
       <ul>
-        <li ng-repeat="acrobat in acrobats">{{ acrobat }}</li>
+        <li ng-repeat="acrobat in acrobats track by $index">
+          The Fabulous {{ acrobat.name }}: Master of {{ acrobat.act}}
+          <a href="#" ng-click="editAcrobat(acrobat)">(edit)</a>
+          <a href="#" ng-click="removeAcrobat($index)">remove</a>
+        </li>
       </ul>
     </div>
   </body>
